@@ -1,0 +1,55 @@
+name: user_data_pipeline
+description: Pipeline to filter and save user data
+tenant: acme_corp
+classification: confidential
+access_model: row-level
+trigger:
+  schedule: "0 4 * * *"
+  timezone: "UTC"
+
+schema:
+  - name: name
+    description: Full name of the user
+    type: string
+    expectations:
+      not_null: true
+      min_length: 2
+
+  - name: age
+    description: Age of the user
+    type: integer
+    expectations:
+      min: 0
+
+imports:
+  - internal.load_csv
+  - internal.filter_names
+  - internal.save_json
+
+steps:
+  - name: load_data
+    uses: internal.load_csv
+    config:
+      path: "data.csv"
+
+  - name: filter_data
+    uses: internal.filter_names
+    config:
+      min_length: 4
+
+  - name: save_results
+    uses: internal.save_json
+    config:
+      path: "results.json"
+
+  - name: aggregate_sales
+    uses: internal.load_sql
+    config:
+      sql: |
+        SELECT
+          region,
+          SUM(sales_amount) AS total_sales
+        FROM
+          input_table
+        GROUP BY
+          region
