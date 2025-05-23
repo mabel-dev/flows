@@ -1,18 +1,23 @@
 # internal/fake_steps.py
 
+
 def load_csv(data, config, flow_config):
     print(f"[load_csv] loading from {config['path']}")
     return [{"name": "Alice"}, {"name": "Bob"}]
+
 
 def filter_names(data, config, flow_config):
     print(f"[filter_names] keeping names with min length {config['min_length']}")
     return [row for row in data if len(row["name"]) >= config["min_length"]]
 
+
 def save_json(data, config, flow_config):
-    print(f"[save_json] saving to {config['path']}")
+    print(f"[save_json] saving to {config['endpoint']}")
     return True
 
+
 # internal/sql_steps.py
+
 
 def load_sql(data, config, flow_config):
     """

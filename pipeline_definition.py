@@ -1,6 +1,11 @@
 import importlib
+from typing import Any
+from typing import Callable
+from typing import Dict
+from typing import List
+from typing import Optional
+
 import yaml
-from typing import Callable, Dict, List, Optional, Any
 
 
 class PipelineStep:
@@ -38,7 +43,9 @@ class PipelineDefinition:
             List of module paths required for resolution.
     """
 
-    def __init__(self, steps: List[PipelineStep], flow_config: Dict, imports: Optional[List[str]] = None):
+    def __init__(
+        self, steps: List[PipelineStep], flow_config: Dict, imports: Optional[List[str]] = None
+    ):
         self.steps = steps
         self.flow_config = flow_config
         self.imports = imports or []
@@ -90,12 +97,7 @@ class PipelineDefinition:
         return {
             "imports": self.imports,
             "steps": [
-                {
-                    "name": step.name,
-                    "uses": step.uses,
-                    "config": step.config
-                }
-                for step in self.steps
+                {"name": step.name, "uses": step.uses, "config": step.config} for step in self.steps
             ],
             **self.flow_config,
         }

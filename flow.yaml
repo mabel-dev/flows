@@ -40,7 +40,9 @@ steps:
   - name: save_results
     uses: internal.save_json
     config:
-      path: "results.json"
+      endpoint: "https://api.thing.com/{{ environment.HOST }}/upload"
+      username: "{{ secrets.API_USER }}"
+      password: "{{ secrets.API_PASSWORD }}"
 
   - name: aggregate_sales
     uses: internal.load_sql
