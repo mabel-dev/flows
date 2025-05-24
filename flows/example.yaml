@@ -10,7 +10,7 @@ trigger:
 schema:
   - name: name
     description: Full name of the user
-    type: string
+    type: varchar
     expectations:
       not_null: true
       min_length: 2
