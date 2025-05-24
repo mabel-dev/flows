@@ -40,7 +40,7 @@ steps:
   - name: save_results
     uses: internal.save_json
     config:
-      endpoint: "https://api.thing.com/{{ environment.HOST }}/upload"
+      endpoint: "https://{{ environment.HOST }}/upload"
       username: "{{ secrets.API_USER }}"
       password: "{{ secrets.API_PASSWORD }}"
 

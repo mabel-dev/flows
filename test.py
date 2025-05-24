@@ -3,15 +3,11 @@ import sys
 from typing import Any
 from typing import Dict
 
+import yaml
 from pipeline_definition import PipelineDefinition  # your code above
 
 sys.path.append(".")  # make sure internal.* is discoverable
 
-
-variables = {
-    "secrets": {"API_USER": "admin", "API_PASSWORD": "hunter2"},
-    "environment": {"HOST": "prod.service.com"},
-}
 
 _PATTERN = re.compile(r"\{\{\s*(\w+)\.(\w+)\s*\}\}")
 
@@ -50,11 +46,19 @@ def resolve_variables(config: Any, variables: Dict[str, Dict[str, Any]]) -> Any:
         return config  # e.g., int, float, None, etc.
 
 
-with open("flow.yaml", "r") as f:
+with open("flows/example.yaml", "r") as f:
     pipeline_yaml = f.read()
 
 
 pipeline = PipelineDefinition.from_yaml(pipeline_yaml)
+
+tenant = pipeline.flow_config.get("tenant", "default")
+
+with open(f"tenants/{tenant}/variables.yaml", "r") as f:
+    variables_text = f.read()
+
+variables = yaml.safe_load(variables_text)
+
 
 for step in pipeline.steps:
     print(f"Resolving step: {step.name}")

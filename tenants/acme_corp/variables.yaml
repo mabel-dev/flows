@@ -1,0 +1,7 @@
+secrets:
+# secrets should be the identity of the secret on the secret manager
+  API_USER: "acme_user"
+  API_PASSWORD: "acme_password"
+
+environment:
+  HOST: "acme-corp-test.com"
