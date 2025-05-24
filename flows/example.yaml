@@ -57,7 +57,6 @@ steps:
       code: |
         import orjson
         def run(data, context):
-            password = 'top secret'
             if data.get("age", 0) < 18:
                 context["flagged"] = True
             return data, context
