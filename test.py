@@ -63,8 +63,9 @@ variables = yaml.safe_load(variables_text)
 for step in pipeline.steps:
     print(f"Resolving step: {step.name}")
     step.config = resolve_variables(step.config, variables)
+    step.config.update(pipeline.flow_config)  # merge flow config into step config
 
 data = None
 for step in pipeline.steps:
     print(f"Executing step: {step.name}")
-    data = step.func(data, step.config, pipeline.flow_config)
+    data = step.func(data, step.config)

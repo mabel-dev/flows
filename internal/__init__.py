@@ -1,25 +1,36 @@
 # internal/fake_steps.py
 
 
-def load_csv(data, config, flow_config):
+def read_gcs(data, config):
     print(f"[load_csv] loading from {config['path']}")
     return [{"name": "Alice"}, {"name": "Bob"}]
 
 
-def filter_names(data, config, flow_config):
+def filter(data, config):
     print(f"[filter_names] keeping names with min length {config['min_length']}")
     return [row for row in data if len(row["name"]) >= config["min_length"]]
 
 
-def save_json(data, config, flow_config):
+def save(data, config):
     print(f"[save_json] saving to {config['endpoint']}")
+    return True
+
+
+def python(data, config):
+    from python_scanner import scan_user_code
+
+    code = config.get("code")
+    print(f"[run_python] executing code:\n{config['code']}")
+
+    scan_user_code(code)
+
     return True
 
 
 # internal/sql_steps.py
 
 
-def load_sql(data, config, flow_config):
+def sql(data, config):
     """
     Execute a SQL statement against the input data.
 

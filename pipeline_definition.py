@@ -80,7 +80,7 @@ class PipelineDefinition:
             if uses in available:
                 func = available[uses]
             else:
-                module_name, attr_name = uses.rsplit(".", 1)
+                module_name, attr_name = uses.rsplit("/", 1)
                 mod = importlib.import_module(module_name)
                 func = getattr(mod, attr_name)
 

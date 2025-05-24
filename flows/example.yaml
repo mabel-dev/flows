@@ -21,31 +21,26 @@ schema:
     expectations:
       min: 0
 
-imports:
-  - internal.load_csv
-  - internal.filter_names
-  - internal.save_json
-
 steps:
   - name: load_data
-    uses: internal.load_csv
+    uses: internal/read_gcs
     config:
       path: "data.csv"
 
   - name: filter_data
-    uses: internal.filter_names
+    uses: internal/filter
     config:
       min_length: 4
 
   - name: save_results
-    uses: internal.save_json
+    uses: internal/save
     config:
       endpoint: "https://{{ environment.HOST }}/upload"
       username: "{{ secrets.API_USER }}"
       password: "{{ secrets.API_PASSWORD }}"
 
   - name: aggregate_sales
-    uses: internal.load_sql
+    uses: internal/sql
     config:
       sql: |
         SELECT
@@ -55,3 +50,14 @@ steps:
           input_table
         GROUP BY
           region
+
+  - name: validate_age
+    uses: internal/python
+    config:
+      code: |
+        import orjson
+        def run(data, context):
+            password = 'top secret'
+            if data.get("age", 0) < 18:
+                context["flagged"] = True
+            return data, context
