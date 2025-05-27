@@ -35,7 +35,7 @@ Dependencies:
 """
 
 import ast
-import subprocess
+import subprocess  # nosec
 import tempfile
 
 
@@ -170,10 +170,15 @@ def scan_user_code(code: str, severity_threshold: str = "low") -> None:
         f.flush()
         script_path = f.name
 
+    allowed_severities = {"low", "medium", "high"}
+    if severity_threshold not in allowed_severities:
+        raise ValueError(f"Invalid severity_threshold: {severity_threshold}")
+
     result = subprocess.run(
         ["bandit", "-q", "-r", script_path, "--severity-level", severity_threshold],
         capture_output=True,
         text=True,
+        shell=False,
     )
 
     if result.returncode != 0:

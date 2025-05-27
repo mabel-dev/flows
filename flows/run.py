@@ -4,9 +4,13 @@ from typing import Any
 from typing import Dict
 
 import yaml
-from pipeline_definition import PipelineDefinition  # your code above
 
-sys.path.append(".")  # make sure internal.* is discoverable
+from flows.pipeline_definition import PipelineDefinition  # your code above
+
+sys.path.append(".") 
+
+
+ # make sure internal.* is discoverable
 
 
 _PATTERN = re.compile(r"\{\{\s*(\w+)\.(\w+)\s*\}\}")
@@ -46,7 +50,7 @@ def resolve_variables(config: Any, variables: Dict[str, Dict[str, Any]]) -> Any:
         return config  # e.g., int, float, None, etc.
 
 
-with open("flows/example.yaml", "r") as f:
+with open("definitions/example.yaml", "r") as f:
     pipeline_yaml = f.read()
 
 

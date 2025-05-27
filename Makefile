@@ -5,12 +5,13 @@ lint:
 	python -m ruff check --fix --exit-zero
 	python -m pycln .
 	python -m isort .
+	python -m bandit -r flows
 	python -m ruff format .
 
 update:
 	python -m pip install --upgrade pip uv
-	python -m uv pip install --upgrade -r tests/requirements.txt
-	python -m uv pip install --upgrade -r requirements.txt
+	python -m uv pip install --upgrade -r pyproject.toml --extra=dev
+	python -m uv pip install --upgrade -r pyproject.toml
 
 test:
 	python -m pip install --quiet --upgrade pytest coverage

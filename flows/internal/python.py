@@ -1,16 +1,17 @@
 # internal/run_python.py
 
 import json
-import subprocess
+import subprocess  # nosec
 import tempfile
 from typing import Optional
 from typing import TextIO
-from typing import Tuple
 
-from python_scanner import scan_user_code
+from base_operator import BaseOperator
+
+from flows.python_scanner import scan_user_code
 
 
-class RunPythonStep:
+class PythonStep(BaseOperator):
     """
     A sandboxed step that executes user-provided Python in a persistent subprocess.
     """
@@ -44,11 +45,12 @@ class RunPythonStep:
             stderr=subprocess.PIPE,
             text=True,
             bufsize=1,  # line-buffered
+            shell=False,
         )
         self._stdin = self._proc.stdin
         self._stdout = self._proc.stdout
 
-    def execute(self, data: dict, context: dict) -> Tuple[dict, dict]:
+    def execute(self, data: Optional[dict] = None, context: dict = None) -> tuple:
         """
         Sends one row to the subprocess, receives one transformed row back.
         """

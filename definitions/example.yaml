@@ -23,9 +23,9 @@ schema:
 
 steps:
   - name: load_data
-    uses: internal/read_gcs
+    uses: internal/read
     config:
-      path: "data.csv"
+      path: "gs://data.csv"
 
   - name: filter_data
     uses: internal/filter

@@ -1,7 +1,6 @@
-# internal/fake_steps.py
 
 
-def read_gcs(data, config):
+def read(data, config):
     print(f"[load_csv] loading from {config['path']}")
     return [{"name": "Alice"}, {"name": "Bob"}]
 
@@ -17,7 +16,7 @@ def save(data, config):
 
 
 def python(data, config):
-    from python_scanner import scan_user_code
+    from flows.python_scanner import scan_user_code
 
     code = config.get("code")
     print(f"[run_python] executing code:\n{config['code']}")
