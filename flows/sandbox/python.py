@@ -41,10 +41,10 @@ import traceback
 def main(script_path: str):
     """
     Main runner function that loads and executes user code with data from stdin.
-    
+
     Args:
         script_path: Path to the Python script file to execute
-        
+
     Process:
         1. Loads the user script
         2. Verifies it contains an 'execute' function

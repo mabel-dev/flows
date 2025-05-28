@@ -6,7 +6,7 @@ import tempfile
 from typing import Optional
 from typing import TextIO
 
-from base_operator import BaseOperator
+from base import BaseOperator
 
 from flows.python_scanner import scan_user_code
 
@@ -45,7 +45,7 @@ class PythonStep(BaseOperator):
             stderr=subprocess.PIPE,
             text=True,
             bufsize=1,  # line-buffered
-            shell=False,
+            shell=False,  # nosec
         )
         self._stdin = self._proc.stdin
         self._stdout = self._proc.stdout

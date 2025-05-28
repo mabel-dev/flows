@@ -5,12 +5,9 @@ from typing import Dict
 
 import yaml
 
+sys.path.append(".")
+
 from flows.pipeline_definition import PipelineDefinition  # your code above
-
-sys.path.append(".") 
-
-
- # make sure internal.* is discoverable
 
 
 _PATTERN = re.compile(r"\{\{\s*(\w+)\.(\w+)\s*\}\}")

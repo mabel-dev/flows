@@ -1,5 +1,3 @@
-
-
 def read(data, config):
     print(f"[load_csv] loading from {config['path']}")
     return [{"name": "Alice"}, {"name": "Bob"}]

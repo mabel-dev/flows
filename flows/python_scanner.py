@@ -179,7 +179,7 @@ def scan_user_code(code: str, severity_threshold: str = "low") -> None:
         capture_output=True,
         text=True,
         shell=False,
-    )
+    )  # nosec
 
     if result.returncode != 0:
         raise RuntimeError(f"Bandit found potential issues:\n{result.stdout.strip()}")
