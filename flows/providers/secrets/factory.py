@@ -2,9 +2,9 @@ import os
 from typing import Dict
 from typing import Type
 
-from env_secrets import EnvSecretsProvider
-
 from flows.providers.secrets import SecretsProvider
+
+from .env_secrets import EnvSecretsProvider
 
 # from hashi_secrets import HashiSecretsProvider  # example placeholder
 

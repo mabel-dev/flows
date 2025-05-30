@@ -1,6 +1,6 @@
 import os
 
-from base import SecretsProvider
+from .base import SecretsProvider
 
 
 class EnvSecretsProvider(SecretsProvider):
