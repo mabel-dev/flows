@@ -8,7 +8,7 @@ from typing import TextIO
 
 from base import BaseOperator
 
-from flows.python_scanner import scan_user_code
+from flows.utils.python_scanner import scan_user_code
 
 
 class PythonStep(BaseOperator):

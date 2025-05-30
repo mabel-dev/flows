@@ -5,9 +5,9 @@ from typing import Dict
 
 import yaml
 
-sys.path.append(".")
+from flows.models.flow_model import FlowModel  # your code above
 
-from flows.pipeline_definition import PipelineDefinition  # your code above
+sys.path.append(".")
 
 
 _PATTERN = re.compile(r"\{\{\s*(\w+)\.(\w+)\s*\}\}")
@@ -51,7 +51,7 @@ with open("definitions/example.yaml", "r") as f:
     pipeline_yaml = f.read()
 
 
-pipeline = PipelineDefinition.from_yaml(pipeline_yaml)
+pipeline = FlowModel.from_yaml(pipeline_yaml)
 
 tenant = pipeline.flow_config.get("tenant", "default")
 

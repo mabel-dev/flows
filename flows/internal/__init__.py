@@ -14,7 +14,7 @@ def save(data, config):
 
 
 def python(data, config):
-    from flows.python_scanner import scan_user_code
+    from flows.utils.python_scanner import scan_user_code
 
     code = config.get("code")
     print(f"[run_python] executing code:\n{config['code']}")

@@ -7,6 +7,8 @@ from typing import Optional
 
 import yaml
 
+from flows.utils.variable_resolver import variable_resolver
+
 
 class PipelineStep:
     """
@@ -30,7 +32,7 @@ class PipelineStep:
         self.func = func
 
 
-class PipelineDefinition:
+class FlowModel:
     """
     Represents a parsed pipeline definition.
 
@@ -93,6 +95,14 @@ class PipelineDefinition:
         data = yaml.safe_load(yaml_text)
         return cls.from_dict(data)
 
+    @classmethod
+    def from_name(cls, flow_name: str) -> "FlowModel":
+        if "." in flow_name:
+            raise ValueError("Flow name should not contain dots. Use underscores instead.")
+        with open(f"definitions/{flow_name}.yaml", "r") as f:
+            pipeline_yaml = f.read()
+        return cls.from_yaml(pipeline_yaml)
+
     def to_dict(self) -> Dict[str, Any]:
         return {
             "imports": self.imports,
@@ -101,3 +111,19 @@ class PipelineDefinition:
             ],
             **self.flow_config,
         }
+
+    def resolve_variables(self, variables: Dict[str, Dict[str, Any]]) -> "FlowModel":
+        """
+        Resolve template variables in the pipeline steps' configurations.
+
+        Parameters:
+            variables: Dict[str, Dict[str, Any]]
+                Mapping of namespaces (e.g., 'secrets', 'environment') to key-value pairs.
+
+        Returns:
+            A new FlowModel with resolved configurations.
+        """
+        for step in self.steps:
+            print(f"Resolving step: {step.name}")
+            step.config = variable_resolver(step.config, variables)
+            step.config.update(self.flow_config)
