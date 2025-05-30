@@ -53,7 +53,7 @@ class FlowModel:
         self.imports = imports or []
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "PipelineDefinition":
+    def from_dict(cls, data: Dict[str, Any]) -> "FlowModel":
         imports = data.get("imports", [])
 
         flow_config = {
@@ -91,7 +91,7 @@ class FlowModel:
         return cls(steps=steps, flow_config=flow_config, imports=imports)
 
     @classmethod
-    def from_yaml(cls, yaml_text: str) -> "PipelineDefinition":
+    def from_yaml(cls, yaml_text: str) -> "FlowModel":
         data = yaml.safe_load(yaml_text)
         return cls.from_dict(data)
 
