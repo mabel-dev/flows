@@ -7,6 +7,7 @@ from typing import Optional
 
 import yaml
 
+from flows.internal import get_step
 from flows.utils.variable_resolver import variable_resolver
 
 
@@ -82,9 +83,12 @@ class FlowModel:
             if uses in available:
                 func = available[uses]
             else:
+                version = "latest"
                 module_name, attr_name = uses.rsplit("/", 1)
-                mod = importlib.import_module(module_name)
-                func = getattr(mod, attr_name)
+                if "@" in attr_name:
+                    attr_name, version = attr_name.split("@", 1)
+
+                step = get_step(attr_name, version)
 
             steps.append(PipelineStep(name=name, uses=uses, config=config, func=func))
 

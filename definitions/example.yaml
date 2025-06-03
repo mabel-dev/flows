@@ -23,17 +23,17 @@ schema:
 
 steps:
   - name: load_data
-    uses: internal/read
+    uses: internal/read@1.0.0
     config:
       path: "gs://data.csv"
 
   - name: filter_data
-    uses: internal/filter
+    uses: internal/filter@latest
     config:
       min_length: 4
 
   - name: save_results
-    uses: internal/save
+    uses: internal/save@1.0.0
     config:
       endpoint: "https://{{ environment.HOST }}/upload"
       username: "{{ secrets.API_USER }}"

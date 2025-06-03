@@ -1,14 +1,11 @@
-# internal/run_python.py
-
 import json
 import subprocess  # nosec
 import tempfile
 from typing import Optional
 from typing import TextIO
 
-from base import BaseOperator
-
-from flows.utils.python_scanner import scan_user_code
+from flows.internal.base import BaseOperator
+from flows.internal.python.python_scanner import scan_user_code
 
 
 class PythonStep(BaseOperator):
