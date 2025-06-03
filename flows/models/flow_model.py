@@ -1,13 +1,11 @@
-import importlib
 from typing import Any
-from typing import Callable
 from typing import Dict
 from typing import List
-from typing import Optional
 
 import yaml
 
 from flows.internal import get_step
+from flows.internal.base import BaseOperator
 from flows.utils.variable_resolver import variable_resolver
 
 
@@ -22,15 +20,15 @@ class PipelineStep:
             The import path of the function to execute.
         config: Dict
             Step-specific configuration.
-        func: Callable
-            Resolved Python callable for execution.
+        step: BaseOperator
+            Resolved Python class for execution.
     """
 
-    def __init__(self, name: str, uses: str, config: Dict, func: Callable):
+    def __init__(self, name: str, uses: str, config: Dict, step: BaseOperator):
         self.name = name
         self.uses = uses
         self.config = config
-        self.func = func
+        self.step = step
 
 
 class FlowModel:
@@ -42,21 +40,14 @@ class FlowModel:
             Ordered list of steps to execute.
         flow_config: Dict
             Static metadata and schema for the pipeline.
-        imports: List[str]
-            List of module paths required for resolution.
     """
 
-    def __init__(
-        self, steps: List[PipelineStep], flow_config: Dict, imports: Optional[List[str]] = None
-    ):
+    def __init__(self, steps: List[PipelineStep], flow_config: Dict[str, Any]):
         self.steps = steps
         self.flow_config = flow_config
-        self.imports = imports or []
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> "FlowModel":
-        imports = data.get("imports", [])
-
         flow_config = {
             "name": data.get("name"),
             "description": data.get("description"),
@@ -67,32 +58,28 @@ class FlowModel:
             "schema": data.get("schema", []),
         }
 
-        # preload imported modules
-        available: Dict[str, Callable] = {}
-        for path in imports:
-            module_name, attr_name = path.rsplit(".", 1)
-            mod = importlib.import_module(module_name)
-            available[path] = getattr(mod, attr_name)
-
         steps = []
         for step in data.get("steps", []):
             name = step["name"]
             uses = step["uses"]
             config = step.get("config", {})
 
-            if uses in available:
-                func = available[uses]
-            else:
-                version = "latest"
-                module_name, attr_name = uses.rsplit("/", 1)
-                if "@" in attr_name:
-                    attr_name, version = attr_name.split("@", 1)
+            version = "latest"
+            module_name, attr_name = uses.rsplit("/", 1)
 
-                step = get_step(attr_name, version)
+            if module_name != "internal":
+                raise ValueError(f"Invalid module name: {module_name}. Only 'internal' is allowed.")
 
-            steps.append(PipelineStep(name=name, uses=uses, config=config, func=func))
+            if "@" not in attr_name:
+                raise ValueError(f"Step '{name}' must specify a version using '@'. Found: {attr_name}")
+            
+            attr_name, version = attr_name.split("@", 1)
 
-        return cls(steps=steps, flow_config=flow_config, imports=imports)
+            step = get_step(attr_name, version)
+
+            steps.append(PipelineStep(name=name, uses=uses, config=config, step=step))
+
+        return cls(steps=steps, flow_config=flow_config)
 
     @classmethod
     def from_yaml(cls, yaml_text: str) -> "FlowModel":
@@ -109,7 +96,6 @@ class FlowModel:
 
     def to_dict(self) -> Dict[str, Any]:
         return {
-            "imports": self.imports,
             "steps": [
                 {"name": step.name, "uses": step.uses, "config": step.config} for step in self.steps
             ],
