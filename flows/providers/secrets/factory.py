@@ -34,7 +34,7 @@ def get_secrets_provider(**kwargs) -> SecretsProvider:
     """
     backend = kwargs.get("backend") if "backend" in kwargs else os.getenv("SECRETS_BACKEND")
     if backend is None:
-        env = os.getenv("ENVIRONMENT", "").lower()
+        env = os.getenv("ENVIRONMENT", "local").lower()
         if env in ("dev", "local"):
             backend = "env"
 

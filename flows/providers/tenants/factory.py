@@ -29,9 +29,9 @@ def get_tenants_provider(**kwargs) -> TenantsProvider:
     """
     backend = kwargs.get("backend") if "backend" in kwargs else os.getenv("TENANTS_BACKEND")
     if backend is None:
-        env = os.getenv("ENVIRONMENT", "").lower()
+        env = os.getenv("ENVIRONMENT", "local").lower()
         if env in ("dev", "local"):
-            backend = "env"
+            backend = "file"
 
     if backend not in _REGISTERED_PROVIDERS:
         raise ValueError(f"Unsupported secrets backend: '{backend}'")

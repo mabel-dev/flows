@@ -31,9 +31,9 @@ def get_flow_definitions_provider(**kwargs) -> FlowDefinitionProvider:
         kwargs.get("backend") if "backend" in kwargs else os.getenv("FLOW_DEFINITIONS_BACKEND")
     )
     if backend is None:
-        env = os.getenv("ENVIRONMENT", "").lower()
+        env = os.getenv("ENVIRONMENT", "local").lower()
         if env in ("dev", "local"):
-            backend = "env"
+            backend = "file"
 
     if backend not in _REGISTERED_PROVIDERS:
         raise ValueError(f"Unsupported secrets backend: '{backend}'")
