@@ -36,6 +36,7 @@ Error Handling:
 import json
 import sys
 import traceback
+from typing import Callable
 
 
 def main(script_path: str):
@@ -55,7 +56,7 @@ def main(script_path: str):
         with open(script_path, "r") as f:
             user_code = f.read()
 
-        user_globals = {}
+        user_globals: dict[str, Callable] = {}
         exec(user_code, user_globals)  # nosec
 
         if "execute" not in user_globals:

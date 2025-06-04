@@ -20,4 +20,4 @@ test:
 
 ci:
 	python -m pip install --quiet --upgrade mypy
-	python -m mypy --ignore-missing-imports --python-version 3.12 --no-strict-optional --check-untyped-defs orso
+	python -m mypy --ignore-missing-imports --python-version 3.12 --no-strict-optional --check-untyped-defs flows

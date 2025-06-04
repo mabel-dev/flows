@@ -1,3 +1,4 @@
+from typing import Generator
 from typing import Optional
 
 import opteryx
@@ -11,7 +12,7 @@ class ReadStep(BaseOperator):
         self.flow_config = flow_config
         super().__init__()
 
-    def execute(self, data: Optional[dict] = None, context: dict = None) -> tuple:
+    def execute(self, data: Optional[dict] = None, context: dict = None) -> Generator:
         data = opteryx.query("SELECT * FROM $planets")
         for row in data:
             yield row.to_dict(), context

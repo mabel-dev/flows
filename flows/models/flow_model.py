@@ -24,11 +24,11 @@ class PipelineStep:
             Resolved Python class for execution.
     """
 
-    def __init__(self, name: str, uses: str, config: Dict, step: BaseOperator):
+    def __init__(self, name: str, uses: str, config: Dict, operator: BaseOperator):
         self.name = name
         self.uses = uses
         self.config = config
-        self.step = step
+        self.operator = operator
 
 
 class FlowModel:
@@ -77,9 +77,9 @@ class FlowModel:
 
             attr_name, version = attr_name.split("@", 1)
 
-            step = get_step(attr_name, version)
+            operator = get_step(attr_name, version)
 
-            steps.append(PipelineStep(name=name, uses=uses, config=config, step=step))
+            steps.append(PipelineStep(name=name, uses=uses, config=config, operator=operator))
 
         return cls(steps=steps, flow_config=flow_config)
 
@@ -104,7 +104,7 @@ class FlowModel:
             **self.flow_config,
         }
 
-    def resolve_variables(self, variables: Dict[str, Dict[str, Any]]) -> "FlowModel":
+    def resolve_variables(self, variables: Dict[str, Dict[str, Any]]):
         """
         Resolve template variables in the pipeline steps' configurations.
 

@@ -1,8 +1,9 @@
 import json
 import subprocess  # nosec
 import tempfile
+from typing import IO
+from typing import Generator
 from typing import Optional
-from typing import TextIO
 
 from flows.internal.base import BaseOperator
 from flows.internal.python.python_scanner import scan_user_code
@@ -17,8 +18,8 @@ class PythonStep(BaseOperator):
         self.config = config
         self.flow_config = flow_config
         self._proc: Optional[subprocess.Popen] = None
-        self._stdin: Optional[TextIO] = None
-        self._stdout: Optional[TextIO] = None
+        self._stdin: Optional[IO] = None
+        self._stdout: Optional[IO] = None
 
         self._start_subprocess()
 
@@ -47,7 +48,7 @@ class PythonStep(BaseOperator):
         self._stdin = self._proc.stdin
         self._stdout = self._proc.stdout
 
-    def execute(self, data: Optional[dict] = None, context: dict = None) -> tuple:
+    def execute(self, data: Optional[dict] = None, context: dict = None) -> Generator:
         """
         Sends one row to the subprocess, receives one transformed row back.
         """
@@ -63,7 +64,7 @@ class PythonStep(BaseOperator):
             raise RuntimeError("No response from sandbox")
 
         response = json.loads(line)
-        return response["data"], response["context"]
+        yield response["data"], response["context"]
 
     def close(self):
         if self._proc:
