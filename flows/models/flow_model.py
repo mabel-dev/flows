@@ -71,8 +71,10 @@ class FlowModel:
                 raise ValueError(f"Invalid module name: {module_name}. Only 'internal' is allowed.")
 
             if "@" not in attr_name:
-                raise ValueError(f"Step '{name}' must specify a version using '@'. Found: {attr_name}")
-            
+                raise ValueError(
+                    f"Step '{name}' must specify a version using '@'. Found: {attr_name}"
+                )
+
             attr_name, version = attr_name.split("@", 1)
 
             step = get_step(attr_name, version)

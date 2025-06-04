@@ -40,7 +40,7 @@ steps:
       password: "{{ secrets.API_PASSWORD }}"
 
   - name: aggregate_sales
-    uses: internal/sql
+    uses: internal/sql@1.0.0
     config:
       sql: |
         SELECT
@@ -52,7 +52,7 @@ steps:
           region
 
   - name: validate_age
-    uses: internal/python
+    uses: internal/python@1.0.0
     config:
       code: |
         import orjson

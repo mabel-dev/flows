@@ -24,7 +24,7 @@ if __name__ == "__main__":
     data = None
     for step in pipeline.steps:
         print(f"Executing step: {step.name}")
-        data = step.func(data, step.config)
+        data = step.execute(data, step.config)
 
     # Print the final result
     print("Pipeline execution completed. Final result:")
