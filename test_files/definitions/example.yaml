@@ -42,7 +42,7 @@ steps:
   - name: aggregate_sales
     uses: internal/sql@1.0.0
     config:
-      sql: |
+      statement: |
         SELECT
           region,
           SUM(sales_amount) AS total_sales

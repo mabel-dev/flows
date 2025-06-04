@@ -5,7 +5,7 @@ class SecretsProvider:
     Subclasses must implement open(), close(), and get().
     """
 
-    def __init__(self) -> None:
+    def __init__(self, **kwargs) -> None:
         self._is_open = False
 
     def open(self, **kwargs) -> None:

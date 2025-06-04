@@ -2,22 +2,17 @@ import os
 from typing import Dict
 from typing import Type
 
-from flows.providers.secrets import SecretsProvider
-
-from .env_secrets import EnvSecretsProvider
-
-# from hashi_secrets import HashiSecretsProvider  # example placeholder
+from flows.providers.tenants import TenantsProvider
 
 # Registry of known providers
-_REGISTERED_PROVIDERS: Dict[str, Type[SecretsProvider]] = {
-    "env": EnvSecretsProvider,
+_REGISTERED_PROVIDERS: Dict[str, Type[TenantsProvider]] = {
     # "hashi": HashiSecretsProvider,
     # "aws": AwsSecretsProvider,
     # "gcp": GcpSecretsProvider,
 }
 
 
-def get_secrets_provider(**kwargs) -> SecretsProvider:
+def get_tenants_provider(**kwargs) -> TenantsProvider:
     """
     Factory method for obtaining the appropriate SecretsProvider implementation.
 
@@ -32,7 +27,7 @@ def get_secrets_provider(**kwargs) -> SecretsProvider:
     Returns:
         An initialized and opened SecretsProvider instance.
     """
-    backend = kwargs.get("backend") if "backend" in kwargs else os.getenv("SECRETS_BACKEND")
+    backend = kwargs.get("backend") if "backend" in kwargs else os.getenv("TENANTS_BACKEND")
     if backend is None:
         env = os.getenv("ENVIRONMENT", "").lower()
         if env in ("dev", "local"):

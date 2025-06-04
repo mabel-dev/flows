@@ -5,7 +5,7 @@ lint:
 	python -m ruff check --fix --exit-zero
 	python -m pycln .
 	python -m isort .
-	python -m bandit -r flows
+	python -m bandit -r -q flows
 	python -m ruff format .
 
 update:
