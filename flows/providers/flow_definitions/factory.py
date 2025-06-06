@@ -3,10 +3,11 @@ from typing import Dict
 from typing import Type
 
 from flows.providers.flow_definitions import FlowDefinitionProvider
+from flows.providers.flow_definitions.file_provider import FileProvider
 
 # Registry of known providers
 _REGISTERED_PROVIDERS: Dict[str, Type[FlowDefinitionProvider]] = {
-    # "hashi": HashiSecretsProvider,
+    "file": FileProvider,
     # "aws": AwsSecretsProvider,
     # "gcp": GcpSecretsProvider,
 }
@@ -39,6 +40,5 @@ def get_flow_definitions_provider(**kwargs) -> FlowDefinitionProvider:
         raise ValueError(f"Unsupported secrets backend: '{backend}'")
 
     provider_class = _REGISTERED_PROVIDERS[backend]
-    provider = provider_class()
-    provider.open(**kwargs)
+    provider = provider_class(**kwargs)
     return provider

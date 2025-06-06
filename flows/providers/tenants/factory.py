@@ -3,10 +3,11 @@ from typing import Dict
 from typing import Type
 
 from flows.providers.tenants import TenantsProvider
+from flows.providers.tenants.file_provider import FileProvider
 
 # Registry of known providers
 _REGISTERED_PROVIDERS: Dict[str, Type[TenantsProvider]] = {
-    # "hashi": HashiSecretsProvider,
+    "file": FileProvider,
     # "aws": AwsSecretsProvider,
     # "gcp": GcpSecretsProvider,
 }
@@ -37,6 +38,5 @@ def get_tenants_provider(**kwargs) -> TenantsProvider:
         raise ValueError(f"Unsupported secrets backend: '{backend}'")
 
     provider_class = _REGISTERED_PROVIDERS[backend]
-    provider = provider_class()
-    provider.open(**kwargs)
+    provider = provider_class(**kwargs)
     return provider

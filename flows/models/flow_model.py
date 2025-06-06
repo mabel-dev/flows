@@ -84,17 +84,16 @@ class FlowModel:
         return cls(steps=steps, flow_config=flow_config)
 
     @classmethod
-    def from_yaml(cls, yaml_text: str) -> "FlowModel":
-        data = yaml.safe_load(yaml_text)
-        return cls.from_dict(data)
-
-    @classmethod
     def from_name(cls, flow_name: str) -> "FlowModel":
         if "." in flow_name:
             raise ValueError("Flow name should not contain dots. Use underscores instead.")
-        with open(f"definitions/{flow_name}.yaml", "r") as f:
-            pipeline_yaml = f.read()
-        return cls.from_yaml(pipeline_yaml)
+
+        from flows.providers.flow_definitions import get_flow_definitions_provider
+
+        flow_definitions_provider = get_flow_definitions_provider()
+        flow_definition = flow_definitions_provider.get(flow_name)
+
+        return cls.from_dict(flow_definition)
 
     def to_dict(self) -> Dict[str, Any]:
         return {

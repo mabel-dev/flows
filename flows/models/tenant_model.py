@@ -1,4 +1,3 @@
-import os
 from typing import Any
 from typing import Dict
 
@@ -34,7 +33,10 @@ class TenantModel:
         """
         if "." in tenant_name:
             raise ValueError("Tenant name should not contain dots. Use underscores instead.")
-        path = os.path.join(base_path, tenant_name, "variables.yaml")
-        with open(path, "r", encoding="utf-8") as f:
-            variables = yaml.safe_load(f)
-        return cls(name=tenant_name, variables=variables)
+
+        from flows.providers.tenants import get_tenants_provider
+
+        tenants_provider = get_tenants_provider()
+        tenant_variables = tenants_provider.get(tenant_name)
+
+        return cls(name=tenant_name, variables=tenant_variables)

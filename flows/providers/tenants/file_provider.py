@@ -1,20 +1,19 @@
+import os
+
+import yaml
+
 from flows.providers.tenants import TenantsProvider
 
 
 class FileProvider(TenantsProvider):
-    def __init__(self, file_path: str) -> None:
+    def __init__(self, file_path: str = "test_files/tenants") -> None:
         super().__init__()
         self.file_path = file_path
         self.definitions = {}
 
-    def open(self, **kwargs) -> None:
-        try:
-            with open(self.file_path, "r") as file:
-                for line in file:
-                    key, value = line.strip().split("=", 1)
-                    self.definitions[key] = value
-        except FileNotFoundError:
-            raise ValueError(f"File not found: {self.file_path}")
+        if file_path and not file_path.endswith(os.sep):
+            self.file_path += os.sep
 
-    def get(self, key: str) -> str:
-        return self.definitions.get(key, "")
+    def get(self, key: str) -> dict:
+        with open(f"{self.file_path}{key}{os.sep}variables.yaml", "r") as file:
+            return yaml.safe_load(file.read())
