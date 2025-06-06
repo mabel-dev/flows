@@ -15,4 +15,4 @@ class ReadStep(BaseOperator):
 
         data = opteryx.query("SELECT * FROM $planets")
         for row in data:
-            yield row.to_dict(), context
+            yield row.as_dict, context
