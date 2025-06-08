@@ -4,8 +4,8 @@ from typing import List
 
 import yaml
 
+from flows.engine.base_operator import BaseOperator
 from flows.internal import get_step
-from flows.internal.base import BaseOperator
 from flows.utils.variable_resolver import variable_resolver
 
 

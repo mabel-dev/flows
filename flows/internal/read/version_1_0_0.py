@@ -1,7 +1,7 @@
 from typing import Generator
 from typing import Optional
 
-from flows.internal.base import BaseOperator
+from flows.engine import BaseOperator
 
 
 class ReadStep(BaseOperator):

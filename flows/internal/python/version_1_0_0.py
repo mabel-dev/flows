@@ -5,7 +5,7 @@ from typing import IO
 from typing import Generator
 from typing import Optional
 
-from flows.internal.base import BaseOperator
+from flows.engine import BaseOperator
 from flows.internal.python.python_scanner import scan_user_code
 
 
