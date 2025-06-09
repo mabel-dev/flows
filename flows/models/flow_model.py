@@ -2,8 +2,7 @@ from typing import Any
 from typing import Dict
 from typing import List
 
-import yaml
-
+from flows.engine import Flow
 from flows.engine.base_operator import BaseOperator
 from flows.internal import get_step
 from flows.utils.variable_resolver import variable_resolver
@@ -118,3 +117,22 @@ class FlowModel:
             print(f"Resolving step: {step.name}")
             step.config = variable_resolver(step.config, variables)
             step.config.update(self.flow_config)
+
+    def runner(self) -> Flow:
+        """
+        Create a Flow object from the pipeline steps which can then be used to execute the pipeline.
+        """
+        from flows.engine import EndOperator
+
+        flow = Flow()
+        previous_step = None
+        for step in self.steps:
+            flow.add_step(name=step.name, operator=step.operator)
+            if previous_step:
+                flow.link_steps(previous_step, step.name)
+            previous_step = step.name
+        flow.add_step(name="end", operator=EndOperator())  # Add an end step
+        if previous_step:
+            flow.link_steps(previous_step, "end")
+
+        return flow

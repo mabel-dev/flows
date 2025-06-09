@@ -21,10 +21,8 @@ if __name__ == "__main__":
     pipeline.resolve_variables(tenant.variables)
 
     # Execute the pipeline (not actually running the steps, just a placeholder)
-    data = None
-    for step in pipeline.steps:
-        print(f"Executing step: {step.name}")
-        data = step.operator.execute(data, step.config)
+    with pipeline.runner() as runner:
+        data = runner.run(pipeline)
 
     # Print the final result
     print("Pipeline execution completed. Final result:")

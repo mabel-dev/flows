@@ -5,12 +5,9 @@ monkey-patches to make it easier to use. The decision was made to write a
 specialized, albeit simple, graph library that didn't require monkey-patching.
 """
 
-from typing import List
-
 from flows.engine.base_operator import BaseOperator
 from flows.engine.flow_runner import FlowRunner
-
-from ..errors import FlowError
+from flows.exceptions import FlowError
 
 
 class Flow:
@@ -23,7 +20,7 @@ class Flow:
         self.edges = []
         self.has_run = False
 
-    def add_operator(self, name, operator):
+    def add_step(self, name, operator):
         """
         Add a step to the DAG
 
@@ -35,7 +32,7 @@ class Flow:
         """
         self.nodes[name] = operator
 
-    def link_operators(self, source_operator, target_operator):
+    def link_steps(self, source_operator, target_operator):
         """
         Link steps in a flow.
 
@@ -116,56 +113,8 @@ class Flow:
         self.edges += assimilatee.edges
         self.edges = list(set(self.edges))
 
-    def attach_writers(self, writers: List[dict]):  # pragma: no cover
-        for writer in writers:
-            name = writer.get("name")
-            class_name = writer.get("class")
-
-            if class_name == "gcs":
-                writer = GoogleCloudStorageBin(  # type: ignore
-                    bin_name=name,  # type: ignore
-                    project=writer.get("project"),  # type: ignore
-                    bucket=writer.get("bucket"),  # type: ignore
-                    path=writer.get("path"),  # type: ignore
-                )
-                self._attach_writer(writer)
-
-            if class_name == "file" or class_name == "disk":
-                writer = FileBin(  # type: ignore
-                    bin_name=name,
-                    path=writer.get("path"),  # type: ignore
-                )  # type: ignore
-                self._attach_writer(writer)
-
-            if class_name == "minio":
-                writer = MinioBin(  # type: ignore
-                    bin_name=name,  # type: ignore
-                    end_point=writer.get("end_point"),  # type: ignore
-                    bucket=writer.get("bucket"),  # type: ignore
-                    path=writer.get("path"),  # type: ignore
-                    access_key=writer.get("access_key"),  # type: ignore
-                    secret_key=writer.get("secret_key"),  # type: ignore
-                    secure=writer.get("secure", True),
-                )  # type: ignore
-                self._attach_writer(writer)
-
-    def _attach_writer(self, writer):
-        """
-        Attach the writer to each node in the flow
-        """
-        from ..logging import get_logger
-
-        try:
-            for operator_name in self.nodes:
-                operator = self.get_operator(operator_name)
-                setattr(operator, str(writer.name), writer)
-            return True
-        except Exception as err:
-            get_logger().error(f"Failed to add writer to flow - {type(err).__name__} - {err}")
-            return False
-
     def _validate_flow(self):
-        from ..operators import EndOperator
+        from flows.engine import EndOperator
 
         # flow must be more than one item long
         if len(self.nodes) <= 1:
@@ -193,7 +142,7 @@ class Flow:
         """
         Finalize concludes the flow and returns the sensor information
         """
-        from ..logging import get_logger
+        from orso.logging import get_logger
 
         # determine if we're closing because we had an error condition
         context = {}
@@ -202,7 +151,7 @@ class Flow:
             has_failure = exc_type.__name__ in ("SystemExit", "TimeExceeded")
         context["mabel:errored"] = has_failure
 
-        FlowRunner(self)(BaseOperator.sigterm(), context)
+        FlowRunner(self)(BaseOperator.sigterm, context)
         for operator_name in self.nodes:
             operator = self.get_operator(operator_name)
             if operator:

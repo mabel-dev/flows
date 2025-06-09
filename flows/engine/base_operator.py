@@ -7,9 +7,14 @@ import sys
 import time
 
 from orso.logging import get_logger  # type:ignore
+from orso.tools import random_string
+
+SIGTERM = random_string(64)
 
 
 class BaseOperator:
+    sigterm = SIGTERM  # default signal to use for graceful shutdown
+
     def __init__(self, **kwargs):
         """
         All Operators should inherit from this class, it will help ensure a
