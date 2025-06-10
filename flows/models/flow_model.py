@@ -127,7 +127,7 @@ class FlowModel:
         flow = Flow()
         previous_step = None
         for step in self.steps:
-            flow.add_step(name=step.name, operator=step.operator)
+            flow.add_step(name=step.name, operator=step.operator(**step.config))
             if previous_step:
                 flow.link_steps(previous_step, step.name)
             previous_step = step.name

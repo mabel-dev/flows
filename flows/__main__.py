@@ -4,10 +4,13 @@ import sys
 
 sys.path.append(".")
 
+from orso.logging import set_log_name
+
 from flows.models import FlowModel
 from flows.models import TenantModel
 
 
+set_log_name("FLOWS")
 FLOW_NAME = "example"
 
 
@@ -22,8 +25,7 @@ if __name__ == "__main__":
 
     # Execute the pipeline (not actually running the steps, just a placeholder)
     with pipeline.runner() as runner:
-        data = runner.run(pipeline)
+        runner(pipeline)
 
     # Print the final result
-    print("Pipeline execution completed. Final result:")
-    print(list(data))
+    print("Pipeline execution completed.")

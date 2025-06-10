@@ -40,6 +40,14 @@ def get_step(step_name: str = None, version: str = "latest"):
             version=version,
             available_versions=find_read_versions(),
         )
+    elif step_name == "filter":
+        from flows.internal.filter import find_versions as find_filter_versions
+
+        return _get_step(
+            step_name="internal/filter",
+            version=version,
+            available_versions=find_filter_versions(),
+        )
     else:
         from flows.internal.read import find_versions as find_read_versions
 

@@ -5,6 +5,8 @@ import inspect
 import re
 import sys
 import time
+from typing import Generator
+from typing import Tuple
 
 from orso.logging import get_logger  # type:ignore
 from orso.tools import random_string
@@ -71,7 +73,12 @@ class BaseOperator:
             }
         )
 
-    def execute(self, data: dict = None, context: dict = None):
+        self.config = kwargs
+        print(self.name, self.config)
+
+    def execute(
+        self, data: dict = None, context: dict = None
+    ) -> Generator[Tuple[dict, dict], None, None]:
         """
         YOU MUST OVERRIDE THIS METHOD
 
@@ -155,18 +162,6 @@ class BaseOperator:
                     self.last_few_results.append(0)
                     self.last_few_results.pop(0)
 
-        # message tracing
-        if context.get("trace", False):
-            data_hash = self._hash(data)
-            context["execution_trace"].add_block(
-                data_hash=data_hash,
-                operator=self.name,
-                operator_version=self.version(),
-                execution_ns=my_execution_time,
-                data_block=str(data),
-            )
-            self.logger.audit(f"{context.get('uuid')} {self.name} {data_hash}")
-
         # if there is a high failure rate, abort
         if sum(self.last_few_results) < (len(self.last_few_results) / 2):
             self.logger.alert(
@@ -201,7 +196,7 @@ class BaseOperator:
 
         The version of the Operator code, this is intended to facilitate
         reproducability and auditability of the pipeline. The version is the
-        last 12 characters of the hash of the source code of the 'execute'
+        last 16 characters of the hash of the source code of the 'execute'
         method. This removes the need for the developer to remember to
         increment a version variable.
 
@@ -211,16 +206,12 @@ class BaseOperator:
         source = inspect.getsource(self.execute)
         source = self._only_alpha_nums(source)
         full_hash = hashlib.sha256(source.encode())
-        return full_hash.hexdigest()[-12:]
+        return full_hash.hexdigest()[-16:]
 
     def __del__(self):
         # do nothing - prevents errors if someone thinks they're being a good
         # citizen and calls super().__del__
         pass
-
-    def error_writer(self, record):
-        # this is a stub to be overridden
-        raise ValueError("no error_writer attached")
 
     def _clamp(self, value, low_bound, high_bound):
         """
@@ -235,10 +226,7 @@ class BaseOperator:
         return pattern.sub("", text)
 
     def _hash(self, block):
-        try:
-            bytes_object = serialize(block)
-        except:
-            bytes_object = str(block)
+        bytes_object = str(block)
         raw_hash = hashlib.sha256(bytes_object.encode())
         hex_hash = raw_hash.hexdigest()
         return hex_hash

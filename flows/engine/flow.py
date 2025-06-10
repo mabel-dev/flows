@@ -5,9 +5,13 @@ monkey-patches to make it easier to use. The decision was made to write a
 specialized, albeit simple, graph library that didn't require monkey-patching.
 """
 
+from orso.logging import get_logger
+
 from flows.engine.base_operator import BaseOperator
 from flows.engine.flow_runner import FlowRunner
 from flows.exceptions import FlowError
+
+logger = get_logger()
 
 
 class Flow:
@@ -142,8 +146,6 @@ class Flow:
         """
         Finalize concludes the flow and returns the sensor information
         """
-        from orso.logging import get_logger
-
         # determine if we're closing because we had an error condition
         context = {}
         has_failure = False
@@ -155,7 +157,7 @@ class Flow:
         for operator_name in self.nodes:
             operator = self.get_operator(operator_name)
             if operator:
-                get_logger().audit(operator.read_sensors())
+                logger.audit(operator.read_sensors())
         self.has_run = True
 
     def __repr__(self):
