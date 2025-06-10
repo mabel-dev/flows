@@ -30,7 +30,9 @@ steps:
   - name: filter_data
     uses: internal/filter@latest
     config:
-      min_length: 4
+      conditions:
+        - [["length", ">=", 4], ["status", "==", "approved"]]
+        - [["is_published", "==", true]]
 
   - name: save_results
     uses: internal/save@1.0.0
