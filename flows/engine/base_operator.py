@@ -74,7 +74,6 @@ class BaseOperator:
         )
 
         self.config = kwargs
-        print(self.name, self.config)
 
     def execute(
         self, data: dict = None, context: dict = None

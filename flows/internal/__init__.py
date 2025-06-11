@@ -48,6 +48,22 @@ def get_step(step_name: str = None, version: str = "latest"):
             version=version,
             available_versions=find_filter_versions(),
         )
+    elif step_name == "save":
+        from flows.internal.save import find_versions as find_save_versions
+
+        return _get_step(
+            step_name="internal/save",
+            version=version,
+            available_versions=find_save_versions(),
+        )
+    elif step_name == "sql":
+        from flows.internal.sql import find_versions as find_sql_versions
+
+        return _get_step(
+            step_name="internal/sql",
+            version=version,
+            available_versions=find_sql_versions(),
+        )
     else:
         from flows.internal.read import find_versions as find_read_versions
 
