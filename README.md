@@ -1,16 +1,18 @@
 # flows
 
-Github Actions style data pipline execution engine.
+Github Actions-style data pipline execution engine.
 
+## Terminology
 
+- **Flow**: A single executable instance of a _pipeline_.
+- **Operator**: A reusable processing task.
+- **Pipeline**: The sequence of _operators_ (tasks) to be performed.
+- **Step**: A specific instance of an _operator_, configured and executed as part of a _flow_.
+- **Tenant**: A permission boundary for access to resources.
 
-Terminology:
+## Example Pipeline Definition
 
-- **Flow**: a single executable instance of a _pipeline_
-- **Operator**: defines a reusable processing task
-- **Pipeline**: defines the sequence of _operators_ (tasks) to be performed.
-- **Step**: a specific instance of an _operator_, configured and executed as part of a _flow_.
-- **Tenant**: a permission boundary for access to resources
+Below is an example of a pipeline definition in YAML format:
 
 ~~~yaml
 name: user_data_pipeline

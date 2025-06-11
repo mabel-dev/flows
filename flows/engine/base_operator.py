@@ -1,3 +1,12 @@
+"""
+Base Operator Module
+
+This module defines the BaseOperator class, which provides a common structure,
+interfaces, and utility methods for all Operator classes in the pipeline.
+It manages execution, retries, error handling, logging, and versioning for
+operators, allowing engineers to focus on implementing data processing logic.
+"""
+
 import datetime
 import functools
 import hashlib
@@ -15,36 +24,24 @@ SIGTERM = random_string(64)
 
 
 class BaseOperator:
+    """
+    Base class for all Operators in the pipeline.
+
+    Provides common functionality such as retry logic, error handling,
+    logging, execution time tracking, and versioning. Subclasses should
+    override the `execute` method to implement their specific logic.
+    """
+
     sigterm = SIGTERM  # default signal to use for graceful shutdown
 
     def __init__(self, **kwargs):
         """
-        All Operators should inherit from this class, it will help ensure a
-        common structure to Operator classes and provide some common
-        functionality and interfaces.
-
-        This Base Operator is relatively complex but serves to simplify the
-        implementation of functional Operators so engineers can focus on
-        handling data, not getting a pipeline to work.
-
-        You are expected to override the execute method with the logic of the
-        Operator, this should return None, if the pipeline should terminate
-        at this Operator (for example, if the Operator filters records),
-        return a tuple of (data, context), or a generator/list of (data,
-        context).
+        Initialize the BaseOperator with optional configuration parameters.
 
         Parameters:
-            retry_count: integer (optional)
-                The number of times to attempt a Operator before aborting,
-                this defaults to 2 and is limited between 1 and 5
-            retry_wait: integer (optional)
-                The number of seconds to wait between retries, this defaults
-                to 5 and is limited between 1 and 300
-            rolling_failure_window: integer (optional)
-                The number of previous Operators to remember the
-                success/failure of, when >50% of the Operators in this
-                window are failures, the job aborts. This defaults to 10 and is
-                limited between 1 (single failure aborts) and 100
+            retry_count (int, optional): Number of retry attempts (default: 2, range: 1-5).
+            retry_wait (int, optional): Seconds to wait between retries (default: 5, range: 1-300).
+            rolling_failure_window (int, optional): Number of previous executions to track for failures (default: 10, range: 1-100).
         """
         self.flow = None
         self.records_processed = 0  # number of times this Operator has been run
@@ -221,16 +218,25 @@ class BaseOperator:
         return value
 
     def _only_alpha_nums(self, text):
+        """
+        Remove all non-alphanumeric characters from a string.
+        """
         pattern = re.compile(r"[\W_]+")
         return pattern.sub("", text)
 
     def _hash(self, block):
+        """
+        Compute the SHA-256 hash of a given input.
+        """
         bytes_object = str(block)
         raw_hash = hashlib.sha256(bytes_object.encode())
         hex_hash = raw_hash.hexdigest()
         return hex_hash
 
     def _wrap_text(self, text, line_len):
+        """
+        Wrap text to a specified line length.
+        """
         from textwrap import fill
 
         def _inner(text):

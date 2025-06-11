@@ -5,7 +5,6 @@ from orso.tools import random_string
 
 from flows.exceptions import FlowError
 from flows.exceptions import TimeExceeded
-from flows.utils.text import wrap_text
 
 
 class FlowRunner:
