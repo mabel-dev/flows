@@ -15,18 +15,18 @@ _REGISTERED_PROVIDERS: Dict[str, Type[TenantsProvider]] = {
 
 def get_tenants_provider(**kwargs) -> TenantsProvider:
     """
-    Factory method for obtaining the appropriate SecretsProvider implementation.
+    Factory method for obtaining the appropriate TenantsProvider implementation.
 
     Environment detection rules:
-    - If SECRETS_BACKEND is set, it takes priority.
-    - Otherwise, if ENVIRONMENT is set to 'dev' or 'local', use EnvSecretsProvider.
+    - If TENANTS_BACKEND is set, it takes priority.
+    - Otherwise, if ENVIRONMENT is set to 'dev' or 'local', use FileProvider.
     - Fallback default is 'hashi'.
 
     Parameters:
         kwargs: Additional arguments passed to provider.open()
 
     Returns:
-        An initialized and opened SecretsProvider instance.
+        An initialized and opened TenantsProvider instance.
     """
     backend = kwargs.get("backend") if "backend" in kwargs else os.getenv("TENANTS_BACKEND")
     if backend is None:

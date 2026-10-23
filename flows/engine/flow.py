@@ -1,7 +1,7 @@
 """
 A Flow is a simplified Graph, this originally used NetworkX but it was replaced
 with a bespoke graph implementation as the NetworkX implementation was being
-monkey-patches to make it easier to use. The decision was made to write a
+monkey-patched to make it easier to use. The decision was made to write a
 specialized, albeit simple, graph library that didn't require monkey-patching.
 """
 
@@ -54,7 +54,7 @@ class Flow:
         """
         Get the names of outgoing links from a given step.
 
-        Paramters:
+        Parameters:
             name: string
                 The name of the step to search from
         """
@@ -111,7 +111,7 @@ class Flow:
 
         Parameters:
             assimilatee: Flow
-                The flow to assimilate into the current flows
+                The flow to assimilate into the current flow
         """
         self.nodes = {**self.nodes, **assimilatee.nodes}
         self.edges += assimilatee.edges

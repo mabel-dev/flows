@@ -15,18 +15,18 @@ _REGISTERED_PROVIDERS: Dict[str, Type[FlowDefinitionProvider]] = {
 
 def get_flow_definitions_provider(**kwargs) -> FlowDefinitionProvider:
     """
-    Factory method for obtaining the appropriate SecretsProvider implementation.
+    Factory method for obtaining the appropriate FlowDefinitionProvider implementation.
 
     Environment detection rules:
-    - If SECRETS_BACKEND is set, it takes priority.
-    - Otherwise, if ENVIRONMENT is set to 'dev' or 'local', use EnvSecretsProvider.
+    - If FLOW_DEFINITIONS_BACKEND is set, it takes priority.
+    - Otherwise, if ENVIRONMENT is set to 'dev' or 'local', use FileProvider.
     - Fallback default is 'hashi'.
 
     Parameters:
         kwargs: Additional arguments passed to provider.open()
 
     Returns:
-        An initialized and opened SecretsProvider instance.
+        An initialized and opened FlowDefinitionProvider instance.
     """
     backend = (
         kwargs.get("backend") if "backend" in kwargs else os.getenv("FLOW_DEFINITIONS_BACKEND")
