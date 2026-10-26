@@ -25,7 +25,7 @@ class TenantModel:
         Loads tenant variables from a YAML file.
 
         Args:
-            name: The tenant's name.
+            tenant_name: The tenant's name.
             base_path: The base directory where tenant folders are stored.
 
         Returns:

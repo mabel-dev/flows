@@ -25,7 +25,7 @@ class FlowRunner:
             context: dictionary (optional)
                 Additional information to support the processing of the data
             trace_sample_rate: float (optional)
-                The sample for for to emit trace messages for, default is
+                The sample rate to emit trace messages for, default is
                 1/1000.
         """
         if not context:
